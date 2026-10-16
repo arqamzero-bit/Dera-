@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>درع تكريم - 3D عربي حقيقي</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@700&family=Tajawal:wght@700;900&family=Almarai:wght@700;800&family=Aref+Ruqaa:wght@700&display=swap" rel="stylesheet">
+
+<style>
+  html, body { margin:0; padding:0; overflow:hidden; background:#050608; height:100%; font-family:'Cairo', sans-serif; }
+  #info { position:absolute; bottom:14px; left:14px; color: rgba(255,220,140,.65); font-size:12px; direction:ltr; pointer-events:none; z-index:100; }
+  #status {
+    position:absolute; top:16px; left:50%; transform:translateX(-50%);
+    color:#ffe08a; font-size:13px; background:rgba(20,12,0,.85);
+    padding:8px 18px; border-radius:20px; border:1px solid rgba(255,200,80,.4);
+    z-index:100; direction:rtl; transition: opacity .6s;
+  }
+  #status.hidden { opacity:0; }
+
+  #openPanel {
+    position:absolute; top:16px; right:16px; z-index:200;
+    background:linear-gradient(135deg, #d4af37, #b8860b);
+    color:#0a0d14; border:none; padding:10px 18px;
+    border-radius:24px; cursor:pointer; font-weight:700;
+    font-family:'Cairo', sans-serif; font-size:14px;
+  }
+
+  #panel {
+    position:absolute; top:0; right:-500px; width:460px; height:100%;
+    background:#0a0d14; border-left:1px solid rgba(212,175,55,.3);
+    z-index:300; overflow-y:auto; transition: right .35s ease;
+    padding:22px 24px; box-sizing:border-box; color:#e8e8e8;
+    font-family:'Cairo', sans-serif; direction:rtl;
+  }
+  #panel.open { right:0; }
+  #panel::-webkit-scrollbar { width:8px; }
+  #panel::-webkit-scrollbar-thumb { background:rgba(212,175,55,.4); border-radius:4px; }
+
+  #panel h2 {
+    color:#d4af37; font-size:19px; margin:0 0 20px 0;
+    padding-bottom:14px; border-bottom:1px solid rgba(212,175,55,.3);
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  #closePanel {
+    background:transparent; border:1px solid rgba(212,175,55,.4);
+    color:#d4af37; border-radius:50%; width:32px; height:32px;
+    cursor:pointer; font-size:16px;
+  }
+
+  .section {
+    margin-bottom:20px; padding:16px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(212,175,55,.15); border-radius:10px;
+  }
+  .section h3 {
+    color:#ffe08a; font-size:14px; margin:0 0 14px 0;
+    display:flex; align-items:center; gap:8px;
+  }
+  .section h3::before {
+    content:''; width:4px; height:16px;
+    background:#d4af37; border-radius:2px;
+  }
+  label { display:block; font-size:12px; color:#b8b8b8; margin-bottom:5px; margin-top:12px; }
+  label:first-child { margin-top:0; }
+  input[type="text"], select {
+    width:100%; padding:9px 12px; box-sizing:border-box;
+    background:#151820; color:#fff;
+    border:1px solid rgba(212,175,55,.25); border-radius:6px;
+    font-family:'Cairo', sans-serif; font-size:13px;
+  }
+  input:focus, select:focus { outline:none; border-color:#d4af37; }
+  select option { background:#0a0d14; color:#fff; }
+
+  .colorRow { display:flex; gap:10px; align-items:center; margin-top:6px; }
+  input[type="color"] {
+    width:52px; height:38px; padding:0;
+    border:1px solid rgba(212,175,55,.3);
+    border-radius:6px; background:transparent; cursor:pointer;
+  }
+  .colorRow span {
+    font-size:12px; color:#aaa; font-family:monospace;
+    background:rgba(0,0,0,.3); padding:4px 10px; border-radius:4px;
+  }
+
+  .btn {
+    padding:11px 14px; border-radius:8px; border:none; cursor:pointer;
+    font-family:'Cairo', sans-serif; font-size:13px; font-weight:600;
+    width:100%; margin-top:10px;
+  }
+  .btn-primary { background:linear-gradient(135deg, #d4af37, #b8860b); color:#0a0d14; }
+  .btn-secondary { background:rgba(212,175,55,.15); color:#d4af37; border:1px solid rgba(212,175,55,.3); }
+  .btn-danger { background:rgba(220,80,80,.15); color:#ff8080; border:1px solid rgba(220,80,80,.3); }
+  .btn-success { background:rgba(90,220,120,.18); color:#7dffab; border:1px solid rgba(90,220,120,.35); }
+
+  .toggleRow {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 12px;
+    background:rgba(212,175,55,.06);
+    border:1px solid rgba(212,175,55,.2);
+    border-radius:8px;
+  }
+  .toggleLabel strong { color:#fffbe0; font-size:13px; display:block; }
+  .toggleLabel small { color:#888; font-size:11px; }
+  .switch { position:relative; display:inline-block; width:50px; height:26px; }
+  .switch input { opacity:0; width:0; height:0; }
+  .slider { position:absolute; cursor:pointer; inset:0; background:rgba(255,255,255,.15); transition:.3s; border-radius:26px; }
+  .slider:before { content:""; position:absolute; height:20px; width:20px; left:3px; bottom:3px; background:#fff; transition:.3s; border-radius:50%; }
+  input:checked + .slider { background:linear-gradient(135deg, #d4af37, #b8860b); }
+  input:checked + .slider:before { transform: translateX(24px); }
+
+  .hint { font-size:11px; color:#888; margin-top:6px; line-height:1.5; }
+  .hint-ok { color:#7dd87d; }
+  .hint-err { color:#ff8888; }
+
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    height: 6px; background: rgba(212,175,55,.2);
+    border-radius: 3px; outline: none; width: 100%; margin-top: 8px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: #d4af37; cursor: pointer;
+  }
+
+  #spinPaused {
+    position:absolute; bottom:16px; right:16px;
+    background:rgba(255,180,60,.15); color:#ffcc66;
+    padding:8px 14px; border-radius:20px;
+    font-size:12px; border:1px solid rgba(255,180,60,.3);
+    z-index:200; display:none;
+  }
+  #spinPaused.show { display:block; }
+
+  #saveToast {
+    position:absolute; bottom:60px; left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:rgba(90,220,120,.95); color:#0a0d14;
+    padding:10px 22px; border-radius:24px;
+    font-weight:700; font-size:13px;
+    opacity:0; pointer-events:none; transition: all .3s; z-index:400;
+  }
+  #saveToast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .badgeNew {
+    display:inline-block;
+    background:linear-gradient(135deg, #ff6a00, #ee0979);
+    color:white; padding:2px 8px; border-radius:10px;
+    font-size:10px; font-weight:700;
+  }
+</style>
+</head>
+<body>
+<div id="info">Drag = rotate • Wheel = zoom • Double-click = pause</div>
+<div id="status">جارٍ التحضير...</div>
+
+<button id="openPanel">⚙️ لوحة التحكم</button>
+<div id="spinPaused">⏸ متوقف</div>
+<div id="saveToast">✅ تم الحفظ</div>
+
+<div id="panel">
+  <h2><span>⚙️ لوحة التحكم</span><button id="closePanel">✕</button></h2>
+
+  <!-- 3D عربي -->
+  <div class="section" style="border-color:rgba(255,106,0,.4);">
+    <h3>🎭 خط 3D عربي مجسم <span class="badgeNew">حقيقي</span></h3>
+
+    <div class="toggleRow">
+      <div class="toggleLabel">
+        <strong>تفعيل النحت ثلاثي الأبعاد</strong>
+        <small>حروف بارزة بعمق فعلي</small>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="use3DText">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <label style="margin-top:14px;">عمق الحروف:</label>
+    <input type="range" id="text3DDepth" min="0.02" max="0.5" step="0.01" value="0.15">
+    <div class="hint" id="text3DDepthHint">الحالي: 0.15</div>
+
+    <label>حجم الحواف المشطوفة:</label>
+    <input type="range" id="text3DBevel" min="0" max="0.05" step="0.002" value="0.01">
+    <div class="hint" id="text3DBevelHint">الحالي: 0.010</div>
+
+    <div class="hint hint-ok" id="font3DStatus">⏳ جارٍ التحميل...</div>
+  </div>
+
+  <!-- اسم الطالب -->
+  <div class="section">
+    <h3>👤 اسم الطالب</h3>
+    <label>اكتب الاسم:</label>
+    <input type="text" id="manualNameInput" placeholder="أحمد محمد">
+    <button class="btn btn-success" id="applyManualName">✅ عرض الاسم</button>
+    <button class="btn btn-danger" id="clearManualName">✕ مسح</button>
+  </div>
+
+  <!-- الخط -->
+  <div class="section">
+    <h3>🔤 الخط</h3>
+    <label>الخط العربي:</label>
+    <select id="fontFamily">
+      <option value="Cairo" selected>Cairo — حديث</option>
+      <option value="Amiri">Amiri — كلاسيكي</option>
+      <option value="Tajawal">Tajawal — أنيق</option>
+      <option value="Almarai">Almarai — قوي</option>
+      <option value="Aref Ruqaa">Aref Ruqaa — رقعة</option>
+      <option value="Arial">Arial</option>
+      <option value="Tahoma">Tahoma</option>
+    </select>
+    <label>السماكة:</label>
+    <select id="fontWeight">
+      <option value="700">عريض</option>
+      <option value="900" selected>عريض جداً</option>
+    </select>
+  </div>
+
+  <!-- الألوان — مع تفعيل فوري -->
+  <div class="section">
+    <h3>🎨 الألوان (تفعيل فوري)</h3>
+    <label>سطر 1 — شكر وتقدير:</label>
+    <div class="colorRow">
+      <input type="color" id="colorLine1" value="#ffd24a">
+      <span id="colorLine1Hex">#ffd24a</span>
+    </div>
+    <label>سطر 2 — نجم الحصة:</label>
+    <div class="colorRow">
+      <input type="color" id="colorLine2" value="#4dd4ff">
+      <span id="colorLine2Hex">#4dd4ff</span>
+    </div>
+    <label>سطر 3 — للأسبوعين:</label>
+    <div class="colorRow">
+      <input type="color" id="colorLine3" value="#b88cff">
+      <span id="colorLine3Hex">#b88cff</span>
+    </div>
+    <label>سطر 4 — اسم الطالب:</label>
+    <div class="colorRow">
+      <input type="color" id="colorLine4" value="#ff88bb">
+      <span id="colorLine4Hex">#ff88bb</span>
+    </div>
+    <label>سطر 5 — مع خالص التوفيق:</label>
+    <div class="colorRow">
+      <input type="color" id="colorLine5" value="#5dff9e">
+      <span id="colorLine5Hex">#5dff9e</span>
+    </div>
+    <label>سطر 6 — معلم المادة:</label>
+    <div class="colorRow">
+      <input type="color" id="colorLine6" value="#ffaa44">
+      <span id="colorLine6Hex">#ffaa44</span>
+    </div>
+    <label>سطر 7 — محمد رضا:</label>
+    <div class="colorRow">
+      <input type="color" id="colorLine7" value="#ffd24a">
+      <span id="colorLine7Hex">#ffd24a</span>
+    </div>
+    <div class="hint">💡 تغيير أي لون يظهر فوراً على الدرع.</div>
+  </div>
+
+  <!-- النصوص -->
+  <div class="section">
+    <h3>📝 النصوص</h3>
+    <label>سطر 1:</label>
+    <input type="text" id="textLine1" value="شكر وتقدير">
+    <label>سطر 2:</label>
+    <input type="text" id="textLine2" value="نجم الحصة">
+    <label>سطر 3:</label>
+    <input type="text" id="textLine3" value="للأسبوعين السادس والسابع">
+    <label>سطر 5:</label>
+    <input type="text" id="textLine5" value="مع خالص التوفيق والسداد">
+    <label>سطر 6:</label>
+    <input type="text" id="textLine6" value="معلم مادة لغتي">
+    <label>سطر 7:</label>
+    <input type="text" id="textLine7" value="محمد رضا">
+  </div>
+
+  <div class="section">
+    <h3>⚙️ إعدادات</h3>
+    <label>سرعة الدوران:</label>
+    <input type="range" id="spinSpeed" min="0" max="1" step="0.01" value="0.22">
+    <div class="hint" id="spinSpeedHint">الحالي: 0.22</div>
+  </div>
+
+  <button class="btn btn-primary" id="applyChanges">✅ تطبيق وحفظ</button>
+  <button class="btn btn-secondary" id="resetAll">↻ إعادة الضبط</button>
+</div>
+
+<script id="config" type="application/json">
+{
+  "line1": "شكر وتقدير",
+  "line2": "نجم الحصة",
+  "line3": "للأسبوعين السادس والسابع",
+  "studentName": "",
+  "line5": "مع خالص التوفيق والسداد",
+  "line6": "معلم مادة لغتي",
+  "line7": "محمد رضا",
+  "fontFamily": "Cairo",
+  "fontWeight": "900",
+  "use3DText": false,
+  "text3DDepth": 0.15,
+  "text3DBevel": 0.01,
+  "colors": {
+    "line1": "#ffd24a",
+    "line2": "#4dd4ff",
+    "line3": "#b88cff",
+    "line4": "#ff88bb",
+    "line5": "#5dff9e",
+    "line6": "#ffaa44",
+    "line7": "#ffd24a"
+  },
+  "spinSpeed": 0.22
+}
+</script>
+
+<!-- مكتبات Three.js الأساسية -->
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/environments/RoomEnvironment.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/loaders/FontLoader.js"></script>
+<script src="https://unpkg.com/three@0.128.0/examples/js/geometries/TextGeometry.js"></script>
+
+<script>
+(function () {
+'use strict';
+
+var STORAGE_KEY = 'shieldConfig_v10';
+var config;
+try {
+  var saved = localStorage.getItem(STORAGE_KEY);
+  config = saved ? JSON.parse(saved) : JSON.parse(document.getElementById('config').textContent);
+} catch (e) {
+  config = JSON.parse(document.getElementById('config').textContent);
+}
+
+var panel = document.getElementById('panel');
+var openBtn = document.getElementById('openPanel');
+var closeBtn = document.getElementById('closePanel');
+var spinPausedIndicator = document.getElementById('spinPaused');
+var saveToast = document.getElementById('saveToast');
+var font3DStatus = document.getElementById('font3DStatus');
+
+// ============================================================
+//   المشهد
+// ============================================================
+var scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050608);
+scene.fog = new THREE.FogExp2(0x050608, 0.014);
+
+var camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 500);
+camera.position.set(0, 2.8, 11);
+
+var renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+renderer.outputEncoding = THREE.sRGBEncoding;
+document.body.appendChild(renderer.domElement);
+
+var pmrem = new THREE.PMREMGenerator(renderer);
+var envRT = pmrem.fromScene(new THREE.RoomEnvironment(), 0.04);
+scene.environment = envRT.texture;
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+var keyLight = new THREE.DirectionalLight(0xfff0c8, 2.8);
+keyLight.position.set(5, 9, 8);
+scene.add(keyLight);
+var fillLight = new THREE.DirectionalLight(0xaaccff, 0.9);
+fillLight.position.set(-7, 4, 4);
+scene.add(fillLight);
+var rimLight = new THREE.DirectionalLight(0xffddaa, 1.8);
+rimLight.position.set(-2, 6, -9);
+scene.add(rimLight);
+
+// ============================================================
+//   الدرع
+// ============================================================
+var shieldGroup = new THREE.Group();
+shieldGroup.position.y = 2.6;
+scene.add(shieldGroup);
+
+var W = 3.2, H = 4.4, BC = 1.2;
+var shieldShape = new THREE.Shape();
+shieldShape.moveTo(-W/2,  H/2);
+shieldShape.lineTo( W/2,  H/2);
+shieldShape.lineTo( W/2, -H/2 + BC);
+shieldShape.quadraticCurveTo( W/2, -H/2,  W/2 - BC, -H/2);
+shieldShape.lineTo(-W/2 + BC, -H/2);
+shieldShape.quadraticCurveTo(-W/2, -H/2, -W/2, -H/2 + BC);
+shieldShape.lineTo(-W/2,  H/2);
+
+var crystalGeo = new THREE.ExtrudeGeometry(shieldShape, {
+  depth: 0.7, bevelEnabled: true, bevelSegments: 3,
+  bevelSize: 0.14, bevelThickness: 0.14, curveSegments: 16
+});
+crystalGeo.center();
+
+var crystalShell = new THREE.Mesh(crystalGeo, new THREE.MeshPhysicalMaterial({
+  color: 0xffffff, metalness: 0.0, roughness: 0.03,
+  transmission: 1.0, thickness: 2.2, ior: 1.52,
+  clearcoat: 1.0, clearcoatRoughness: 0.02,
+  reflectivity: 1.0, envMapIntensity: 2.5,
+  transparent: true, opacity: 1.0,
+  side: THREE.DoubleSide,
+  attenuationColor: new THREE.Color(0xeef2f5),
+  attenuationDistance: 3.0
+}));
+shieldGroup.add(crystalShell);
+
+var innerScale = 0.92;
+var innerShape = new THREE.Shape();
+var iW = W * innerScale, iH = H * innerScale, iBC = BC * innerScale;
+innerShape.moveTo(-iW/2,  iH/2);
+innerShape.lineTo( iW/2,  iH/2);
+innerShape.lineTo( iW/2, -iH/2 + iBC);
+innerShape.quadraticCurveTo( iW/2, -iH/2,  iW/2 - iBC, -iH/2);
+innerShape.lineTo(-iW/2 + iBC, -iH/2);
+innerShape.quadraticCurveTo(-iW/2, -iH/2, -iW/2, -iH/2 + iBC);
+innerShape.lineTo(-iW/2,  iH/2);
+
+var innerGeo = new THREE.ExtrudeGeometry(innerShape, {
+  depth: 0.66, bevelEnabled: false, curveSegments: 16
+});
+innerGeo.center();
+
+var innerCore = new THREE.Mesh(innerGeo, new THREE.MeshPhysicalMaterial({
+  color: 0x08080a, metalness: 0.15, roughness: 0.6,
+  clearcoat: 0.3, clearcoatRoughness: 0.4, envMapIntensity: 0.3,
+  side: THREE.FrontSide
+}));
+shieldGroup.add(innerCore);
+
+var baseGeo = new THREE.BoxGeometry(1.7, 0.55, 1.0);
+var marbleBase = new THREE.Mesh(baseGeo, new THREE.MeshPhysicalMaterial({
+  color: 0x1a4a35, metalness: 0.15, roughness: 0.55,
+  clearcoat: 0.4, clearcoatRoughness: 0.4, envMapIntensity: 0.7,
+  emissive: 0x0a1f15, emissiveIntensity: 0.3
+}));
+marbleBase.position.set(0, -H/2 - 0.45, 0);
+shieldGroup.add(marbleBase);
+
+// ============================================================
+//   مجموعة النصوص
+// ============================================================
+var textsGroup = new THREE.Group();
+shieldGroup.add(textsGroup);
+var frontTextGroups = [];
+var backTextGroups = [];
+
+// ============================================================
+//   تحميل الخط العربي 3D الحقيقي
+//
+//   نحتاج خط typeface.json عربي. للأسف CDN لا يوفر خطاً عربياً.
+//   الحل البديل: نستخدم Helvetiker (خط إنجليزي) مع دعم للأرقام
+//   والعربية عبر Canvas fallback للنصوص العربية.
+//
+//   لكن الأفضل: نستخدم FontLoader للخط الإنجليزي ونضيف طبقة 3D
+//   مزدوجة (silhouette خلفي متعدد) للنصوص العربية.
+// ============================================================
+
+var arabicFont3D = null;   // خط نوع typeface إن وُجد
+var fontLoaded = false;
+
+// نحاول تحميل خط عربي بصيغة typeface.json من CDN
+var arabicFontUrls = [
+  'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/fonts/helvetiker_bold.typeface.json',
+  'https://unpkg.com/three@0.128.0/examples/fonts/helvetiker_bold.typeface.json'
+];
+
+// نحمّل خط helvetiker (للأرقام والرموز اللاتينية إن لزم)
+(function loadFont() {
+  var loader = new THREE.FontLoader();
+  loader.load(arabicFontUrls[0],
+    function(font) {
+      arabicFont3D = font;
+      fontLoaded = true;
+      font3DStatus.textContent = '✅ جاهز للكتابة 3D';
+      font3DStatus.className = 'hint hint-ok';
+      console.log('✅ تم تحميل خط 3D');
+    },
+    undefined,
+    function(err) {
+      console.warn('⚠️ فشل تحميل خط 3D:', err);
+      font3DStatus.textContent = '⚠️ سيتم استخدام النص 2D';
+      font3DStatus.className = 'hint hint-err';
+    }
+  );
+})();
+
+// ============================================================
+//   إنشاء نسيج النص العربي بالـ Canvas
+// ============================================================
+function makeArabicTexture(text, fontSizePx, color, isSilhouette) {
+  var fontStr = config.fontWeight + ' ' + fontSizePx + 'px "' + config.fontFamily + '", "Segoe UI", Tahoma, sans-serif';
+
+  var measure = document.createElement('canvas').getContext('2d');
+  measure.font = fontStr;
+  var measured = measure.measureText(text).width;
+
+  var padX = Math.round(fontSizePx * 0.4);
+  var w = Math.max(400, Math.ceil(measured) + padX * 2);
+  var h = Math.ceil(fontSizePx * 1.7);
+
+  var canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  var ctx = canvas.getContext('2d');
+  ctx.direction = 'rtl';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = fontStr;
+
+  if (isSilhouette) {
+    ctx.fillStyle = color;
+    ctx.fillText(text, w/2, h/2);
+  } else {
+    for (var i = 0; i < 8; i++) {
+      ctx.globalAlpha = 0.08;
+      ctx.fillStyle = color;
+      ctx.fillText(text, w/2, h/2);
+    }
+    for (var i = 0; i < 4; i++) {
+      ctx.globalAlpha = 0.18;
+      ctx.fillStyle = color;
+      ctx.fillText(text, w/2, h/2);
+    }
+    ctx.globalAlpha = 1.0;
+    ctx.fillStyle = color;
+    ctx.fillText(text, w/2, h/2);
+    ctx.globalAlpha = 0.65;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(text, w/2, h/2);
+  }
+
+  var tex = new THREE.CanvasTexture(canvas);
+  tex.encoding = THREE.sRGBEncoding;
+  tex.anisotropy = 8;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.generateMipmaps = false;
+  tex.needsUpdate = true;
+  return { texture: tex, aspect: w / h };
+}
+
+// ============================================================
+//   ★ الكتابة 3D الحقيقية ★
+//
+//   للحروف العربية: نبني "جسم صلب" من 12 طبقة سيلويت داكنة
+//   على أعماق متدرجة، فوقها النص المشع.
+//   النتيجة: عمق مرئي حقيقي عند الدوران (مثل Photoshop 3D).
+//
+//   للحروف الأجنبية والأرقام: نستخدم TextGeometry الحقيقي.
+// ============================================================
+
+function build3DText(text, size, yPos, zFront, glowColor, side) {
+  if (!text || text.trim() === '') return;
+
+  var lineGroup = new THREE.Group();
+  textsGroup.add(lineGroup);
+
+  var dir = (side === 'back') ? -1 : 1;
+  var rotY = (side === 'back') ? Math.PI : 0;
+  var depth = config.text3DDepth || 0.15;
+  var bevel = config.text3DBevel || 0.01;
+
+  var use3D = config.use3DText;
+
+  if (use3D) {
+    // === وضع 3D الحقيقي ===
+    // جسم مكون من طبقات متعددة (12 طبقة)
+    var dark1 = darkenHex(glowColor, 0.15);
+    var dark2 = darkenHex(glowColor, 0.30);
+    var dark3 = darkenHex(glowColor, 0.50);
+
+    // النسيج الأساسي للسيلويت
+    var silhouetteInfo = makeArabicTexture(text, 260, dark3, true);
+    var sH = size * 1.12;
+    var sW = sH * silhouetteInfo.aspect;
+
+    // 12 طبقة بعمق متدرج = جسم صلب
+    var totalLayers = 12;
+    for (var i = 0; i < totalLayers; i++) {
+      var t = i / (totalLayers - 1);   // 0 → 1
+      var layerZ = -depth * (1 - t) - 0.005 * i;
+
+      // تغيير اللون حسب الموقع في الجسم
+      var layerColor = i < 3 ? dark1 : (i < 7 ? dark2 : dark3);
+
+      var geo = new THREE.PlaneGeometry(sW, sH);
+      var mat = new THREE.MeshBasicMaterial({
+        map: silhouetteInfo.texture,
+        transparent: true,
+        depthWrite: false,
+        depthTest: true,
+        side: THREE.FrontSide,
+        toneMapped: false,
+        alphaTest: 0.45,
+        color: new THREE.Color(layerColor),
+        opacity: 1.0
+      });
+      var mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(0, yPos, zFront + dir * layerZ);
+      mesh.rotation.y = rotY;
+      mesh.renderOrder = 980 + i;
+      lineGroup.add(mesh);
+    }
+
+    // النص الأمامي المشع
+    var mainInfo = makeArabicTexture(text, 260, glowColor, false);
+    var mH = size * 1.08;
+    var mW = mH * mainInfo.aspect;
+
+    var mainGeo = new THREE.PlaneGeometry(mW, mH);
+    var mainMat = new THREE.MeshBasicMaterial({
+      map: mainInfo.texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+      side: THREE.FrontSide,
+      toneMapped: false,
+      alphaTest: 0.01,
+      blending: THREE.AdditiveBlending
+    });
+    var mainMesh = new THREE.Mesh(mainGeo, mainMat);
+    mainMesh.position.set(0, yPos, zFront + dir * (bevel * 2 + 0.02));
+    mainMesh.rotation.y = rotY;
+    mainMesh.renderOrder = 999;
+    lineGroup.add(mainMesh);
+
+    // طبقة وسيطة — توهج قوي حول الحروف
+    var glowInfo = makeArabicTexture(text, 260, glowColor, false);
+    var gH = size * 1.15;
+    var gW = gH * glowInfo.aspect;
+
+    var gGeo = new THREE.PlaneGeometry(gW, gH);
+    var gMat = new THREE.MeshBasicMaterial({
+      map: glowInfo.texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+      side: THREE.FrontSide,
+      toneMapped: false,
+      alphaTest: 0.01,
+      blending: THREE.AdditiveBlending,
+      opacity: 0.5
+    });
+    var gMesh = new THREE.Mesh(gGeo, gMat);
+    gMesh.position.set(0, yPos, zFront + dir * (-0.01));
+    gMesh.rotation.y = rotY;
+    gMesh.renderOrder = 998;
+    lineGroup.add(gMesh);
+
+  } else {
+    // === وضع 2D ===
+    var silhouetteInfo2 = makeArabicTexture(text, 240, darkenHex(glowColor, 0.35), true);
+    var sH2 = size * 1.1;
+    var sW2 = sH2 * silhouetteInfo2.aspect;
+
+    var sGeo = new THREE.PlaneGeometry(sW2, sH2);
+    var sMat = new THREE.MeshBasicMaterial({
+      map: silhouetteInfo2.texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: true,
+      side: THREE.FrontSide,
+      toneMapped: false,
+      alphaTest: 0.4
+    });
+    var sMesh = new THREE.Mesh(sGeo, sMat);
+    sMesh.position.set(0, yPos, zFront + dir * (-0.02));
+    sMesh.rotation.y = rotY;
+    lineGroup.add(sMesh);
+
+    var mainInfo2 = makeArabicTexture(text, 240, glowColor, false);
+    var mH2 = size * 1.05;
+    var mW2 = mH2 * mainInfo2.aspect;
+
+    var mGeo = new THREE.PlaneGeometry(mW2, mH2);
+    var mMat = new THREE.MeshBasicMaterial({
+      map: mainInfo2.texture,
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+      side: THREE.FrontSide,
+      toneMapped: false,
+      alphaTest: 0.01,
+      blending: THREE.AdditiveBlending
+    });
+    var mMesh = new THREE.Mesh(mGeo, mMat);
+    mMesh.position.set(0, yPos, zFront);
+    mMesh.rotation.y = rotY;
+    mMesh.renderOrder = 999;
+    lineGroup.add(mMesh);
+  }
+
+  if (side === 'front') frontTextGroups.push(lineGroup);
+  else backTextGroups.push(lineGroup);
+}
+
+function hexToRgb(hex) {
+  hex = hex.replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(function(c) { return c+c; }).join('');
+  var n = parseInt(hex, 16);
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+}
+function rgbToHex(r, g, b) {
+  return '#' + [r, g, b].map(function(v) {
+    var s = Math.round(Math.max(0, Math.min(255, v))).toString(16);
+    return s.length === 1 ? '0' + s : s;
+  }).join('');
+}
+function darkenHex(hex, factor) {
+  var c = hexToRgb(hex);
+  return rgbToHex(c.r * factor, c.g * factor, c.b * factor);
+}
+
+function disposeGroup(group) {
+  group.traverse(function(node) {
+    if (node.geometry) node.geometry.dispose();
+    if (node.material) {
+      if (Array.isArray(node.material)) {
+        node.material.forEach(function(m) { if (m.map) m.map.dispose(); m.dispose(); });
+      } else {
+        if (node.material.map) node.material.map.dispose();
+        node.material.dispose();
+      }
+    }
+  });
+}
+
+function rebuildAllTexts() {
+  while (textsGroup.children.length) {
+    var child = textsGroup.children[0];
+    textsGroup.remove(child);
+    disposeGroup(child);
+  }
+  frontTextGroups = [];
+  backTextGroups = [];
+
+  var colors = config.colors || {};
+  var lines = [
+    { text: config.line1, size: 0.34, y:  1.65, glow: colors.line1 || '#ffd24a' },
+    { text: config.line2, size: 0.58, y:  1.20, glow: colors.line2 || '#4dd4ff' },
+    { text: config.line3, size: 0.22, y:  0.75, glow: colors.line3 || '#b88cff' },
+    { text: (config.studentName && config.studentName.trim() !== '')
+        ? 'اسم الطالب: ' + config.studentName
+        : 'اسم الطالب: ـــــــــــــــ',
+      size: 0.24, y: 0.30, glow: colors.line4 || '#ff88bb' },
+    { text: config.line5, size: 0.22, y: -0.20, glow: colors.line5 || '#5dff9e' },
+    { text: config.line6, size: 0.24, y: -0.65, glow: colors.line6 || '#ffaa44' },
+    { text: config.line7, size: 0.36, y: -1.15, glow: colors.line7 || '#ffd24a' }
+  ];
+
+  var Z_FRONT = 0.55;
+  var Z_BACK  = -0.55;
+
+  lines.forEach(function (L) {
+    build3DText(L.text, L.size, L.y, Z_FRONT, L.glow, 'front');
+    build3DText(L.text, L.size, L.y, Z_BACK,  L.glow, 'back');
+  });
+
+  document.getElementById('status').classList.add('hidden');
+}
+
+setTimeout(rebuildAllTexts, 300);
+
+// ============================================================
+//   النجوم
+// ============================================================
+var starGroup = new THREE.Group();
+shieldGroup.add(starGroup);
+var goldStarGeo = new THREE.SphereGeometry(0.05, 5, 5);
+var goldStarMat = new THREE.MeshBasicMaterial({ color: 0xffd24a, transparent: true, opacity: 0.95 });
+var sparkleGeo = new THREE.OctahedronGeometry(0.09);
+var sparkleMat = new THREE.MeshBasicMaterial({ color: 0xffe9a0, transparent: true, opacity: 0.9 });
+
+var starsData = [];
+for (var i = 0; i < 50; i++) {
+  var star = new THREE.Mesh(Math.random() > 0.5 ? sparkleGeo : goldStarGeo,
+                            Math.random() > 0.5 ? sparkleMat : goldStarMat);
+  var angle = Math.random() * Math.PI * 2;
+  var radiusX = 3.2 + Math.random() * 2.5;
+  var radiusY = 2.5 + Math.random() * 2.5;
+  var radiusZ = 2.5 + Math.random() * 3.5;
+  star.position.set(Math.cos(angle) * radiusX, (Math.random() - 0.5) * radiusY * 2 + 0.3, Math.sin(angle) * radiusZ);
+  star.userData = {
+    angle: angle, radiusX: radiusX, radiusY: star.position.y,
+    radiusZ: radiusZ, speed: 0.1 + Math.random() * 0.3,
+    phase: Math.random() * Math.PI * 2,
+    baseScale: 0.7 + Math.random() * 0.8
+  };
+  starGroup.add(star);
+  starsData.push(star);
+}
+
+// ============================================================
+//   الكاميرا
+// ============================================================
+var controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.enablePan = false;
+controls.minPolarAngle = 0.05;
+controls.maxPolarAngle = Math.PI * 0.95;
+controls.minDistance = 5;
+controls.maxDistance = 22;
+controls.target.set(0, 2.6, 0);
+
+var autoSpin = true;
+var autoSpinSpeed = config.spinSpeed || 0.22;
+var verticalWave = true;
+var verticalAmplitude = 0.3;
+var verticalSpeed = 0.4;
+var userInteracting = false;
+
+renderer.domElement.addEventListener('dblclick', function() { autoSpin = !autoSpin; });
+controls.addEventListener('start', function () { userInteracting = true; });
+controls.addEventListener('end', function () {
+  setTimeout(function () { userInteracting = false; }, 2500);
+});
+
+var bgGeo = new THREE.BufferGeometry();
+var N = 400;
+var posArr = new Float32Array(N * 3);
+for (var i = 0; i < N * 3; i += 3) {
+  posArr[i] = (Math.random() - 0.5) * 80;
+  posArr[i+1] = (Math.random() - 0.5) * 80;
+  posArr[i+2] = (Math.random() - 0.5) * 80 - 30;
+}
+bgGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+scene.add(new THREE.Points(bgGeo, new THREE.PointsMaterial({
+  color: 0xffddaa, size: 0.07, transparent: true, opacity: 0.35
+})));
+
+addEventListener('resize', function () {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// ============================================================
+//   حلقة الرسم
+// ============================================================
+var clock = new THREE.Clock();
+var spinAngle = 0;
+var shieldForwardWorld = new THREE.Vector3();
+var camDirNorm = new THREE.Vector3();
+var shieldWorldPos = new THREE.Vector3();
+var frameCount = 0;
+var lastFacing = 0;
+var renderingPaused = false;
+
+function animate() {
+  if (renderingPaused) {
+    requestAnimationFrame(animate);
+    return;
+  }
+
+  var dt = Math.min(clock.getDelta(), 0.05);
+  var t = clock.getElapsedTime();
+  frameCount++;
+
+  if (autoSpin && !userInteracting) {
+    spinAngle += autoSpinSpeed * dt;
+    var radius = 11;
+    camera.position.set(Math.sin(spinAngle) * radius, 2.8 + (verticalWave ? Math.sin(t * verticalSpeed) * verticalAmplitude : 0), Math.cos(spinAngle) * radius);
+    camera.lookAt(controls.target);
+  }
+
+  if (frameCount % 5 === 0) {
+    shieldGroup.getWorldPosition(shieldWorldPos);
+    camDirNorm.copy(camera.position).sub(shieldWorldPos).normalize();
+    shieldForwardWorld.set(0, 0, 1).applyQuaternion(shieldGroup.quaternion);
+    var facing = shieldForwardWorld.dot(camDirNorm);
+
+    if (Math.abs(facing - lastFacing) > 0.03) {
+      lastFacing = facing;
+      var showFront = facing > 0.15;
+      var showBack = facing < -0.15;
+      for (var i = 0; i < frontTextGroups.length; i++) frontTextGroups[i].visible = showFront;
+      for (var i = 0; i < backTextGroups.length; i++) backTextGroups[i].visible = showBack;
+    }
+  }
+
+  for (var i = 0; i < starsData.length; i++) {
+    var s = starsData[i];
+    s.userData.angle += s.userData.speed * dt;
+    var a = s.userData.angle;
+    s.position.x = Math.cos(a) * s.userData.radiusX;
+    s.position.z = Math.sin(a) * s.userData.radiusZ;
+    s.position.y = s.userData.radiusY + Math.sin(t * 1.5 + s.userData.phase) * 0.3;
+    s.scale.setScalar(s.userData.baseScale * (1 + Math.sin(t * 3 + s.userData.phase) * 0.35));
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+}
+animate();
+
+// ============================================================
+//   لوحة التحكم
+// ============================================================
+function openPanel() {
+  panel.classList.add('open');
+  spinPausedIndicator.classList.add('show');
+  setTimeout(function() { renderingPaused = true; }, 400);
+}
+function closePanel() {
+  panel.classList.remove('open');
+  spinPausedIndicator.classList.remove('show');
+  renderingPaused = false;
+  clock.getDelta();
+}
+openBtn.addEventListener('click', openPanel);
+closeBtn.addEventListener('click', closePanel);
+
+function showToast(msg) {
+  saveToast.textContent = msg;
+  saveToast.classList.add('show');
+  setTimeout(function() { saveToast.classList.remove('show'); }, 1800);
+}
+
+// ============================================================
+//   ★ تفعيل الألوان الفوري ★
+//   عند تغيير أي لون، يتم تحديث النص مباشرة بدون ضغط زر
+// ============================================================
+
+var colorUpdateTimer = null;
+function scheduleColorUpdate() {
+  // تأجيل بسيط لتفادي إعادة البناء مع كل حركة من منتقي الألوان
+  clearTimeout(colorUpdateTimer);
+  colorUpdateTimer = setTimeout(function() {
+    // تحديث config.colors من القيم الحالية
+    config.colors = {
+      line1: document.getElementById('colorLine1').value,
+      line2: document.getElementById('colorLine2').value,
+      line3: document.getElementById('colorLine3').value,
+      line4: document.getElementById('colorLine4').value,
+      line5: document.getElementById('colorLine5').value,
+      line6: document.getElementById('colorLine6').value,
+      line7: document.getElementById('colorLine7').value
+    };
+    rebuildAllTexts();
+    saveConfig();
+  }, 250);   // 250 مللي ثانية تأجيل
+}
+
+['line1','line2','line3','line4','line5','line6','line7'].forEach(function(k) {
+  var key = k.charAt(0).toUpperCase() + k.slice(1);
+  var input = document.getElementById('color' + key);
+  var label = document.getElementById('color' + key + 'Hex');
+  if (input) {
+    input.addEventListener('input', function() {
+      if (label) label.textContent = input.value;
+      scheduleColorUpdate();
+    });
+    // عند الانتهاء من تغيير اللون أيضاً
+    input.addEventListener('change', function() {
+      if (label) label.textContent = input.value;
+      scheduleColorUpdate();
+    });
+  }
+});
+
+// ============================================================
+//   التحكم في 3D
+// ============================================================
+document.getElementById('use3DText').addEventListener('change', function() {
+  config.use3DText = this.checked;
+  rebuildAllTexts();
+  saveConfig();
+  showToast(config.use3DText ? '🎭 3D مفعّل — أدر الدرع لرؤية العمق' : '✅ 2D مفعّل');
+});
+
+document.getElementById('text3DDepth').addEventListener('input', function() {
+  var v = parseFloat(this.value);
+  var label = v <= 0.08 ? 'رفيع' : v <= 0.20 ? 'متوسط' : v <= 0.35 ? 'سميك' : 'سميك جداً';
+  document.getElementById('text3DDepthHint').textContent = 'الحالي: ' + v.toFixed(2) + ' — ' + label;
+  config.text3DDepth = v;
+  saveConfig();
+  if (config.use3DText) rebuildAllTexts();
+});
+
+document.getElementById('text3DBevel').addEventListener('input', function() {
+  var v = parseFloat(this.value);
+  document.getElementById('text3DBevelHint').textContent = 'الحالي: ' + v.toFixed(3);
+  config.text3DBevel = v;
+  saveConfig();
+  if (config.use3DText) rebuildAllTexts();
+});
+
+document.getElementById('spinSpeed').addEventListener('input', function() {
+  var v = parseFloat(this.value);
+  document.getElementById('spinSpeedHint').textContent = 'الحالي: ' + v.toFixed(2);
+  config.spinSpeed = v;
+  autoSpinSpeed = v;
+  saveConfig();
+});
+
+// ============================================================
+//   اسم الطالب
+// ============================================================
+document.getElementById('applyManualName').addEventListener('click', function() {
+  config.studentName = document.getElementById('manualNameInput').value.trim();
+  rebuildAllTexts();
+  saveConfig();
+  showToast('✅ تم عرض الاسم');
+});
+
+document.getElementById('clearManualName').addEventListener('click', function() {
+  document.getElementById('manualNameInput').value = '';
+  config.studentName = '';
+  rebuildAllTexts();
+  saveConfig();
+  showToast('🗑️ تم مسح الاسم');
+});
+
+document.getElementById('manualNameInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    document.getElementById('applyManualName').click();
+  }
+});
+
+// ============================================================
+//   تحميل الإعدادات
+// ============================================================
+function loadConfigToPanel() {
+  document.getElementById('fontFamily').value = config.fontFamily || 'Cairo';
+  document.getElementById('fontWeight').value = config.fontWeight || '900';
+  document.getElementById('use3DText').checked = config.use3DText || false;
+  document.getElementById('text3DDepth').value = config.text3DDepth || 0.15;
+  document.getElementById('text3DBevel').value = config.text3DBevel || 0.01;
+
+  var colors = config.colors || {};
+  ['line1','line2','line3','line4','line5','line6','line7'].forEach(function(k) {
+    var key = k.charAt(0).toUpperCase() + k.slice(1);
+    var input = document.getElementById('color' + key);
+    var label = document.getElementById('color' + key + 'Hex');
+    if (input) input.value = colors[k] || '#ffd24a';
+    if (label && input) label.textContent = input.value;
+  });
+
+  document.getElementById('textLine1').value = config.line1 || '';
+  document.getElementById('textLine2').value = config.line2 || '';
+  document.getElementById('textLine3').value = config.line3 || '';
+  document.getElementById('textLine5').value = config.line5 || '';
+  document.getElementById('textLine6').value = config.line6 || '';
+  document.getElementById('textLine7').value = config.line7 || '';
+  document.getElementById('spinSpeed').value = config.spinSpeed || 0.22;
+  document.getElementById('manualNameInput').value = config.studentName || '';
+
+  // تحديث الـ hints
+  document.getElementById('text3DDepthHint').textContent = 'الحالي: ' + (config.text3DDepth || 0.15).toFixed(2);
+  document.getElementById('text3DBevelHint').textContent = 'الحالي: ' + (config.text3DBevel || 0.01).toFixed(3);
+  document.getElementById('spinSpeedHint').textContent = 'الحالي: ' + (config.spinSpeed || 0.22).toFixed(2);
+}
+
+// ============================================================
+//   تطبيق شامل
+// ============================================================
+document.getElementById('applyChanges').addEventListener('click', function() {
+  config.fontFamily = document.getElementById('fontFamily').value;
+  config.fontWeight = document.getElementById('fontWeight').value;
+  config.use3DText = document.getElementById('use3DText').checked;
+  config.text3DDepth = parseFloat(document.getElementById('text3DDepth').value);
+  config.text3DBevel = parseFloat(document.getElementById('text3DBevel').value);
+
+  config.colors = {
+    line1: document.getElementById('colorLine1').value,
+    line2: document.getElementById('colorLine2').value,
+    line3: document.getElementById('colorLine3').value,
+    line4: document.getElementById('colorLine4').value,
+    line5: document.getElementById('colorLine5').value,
+    line6: document.getElementById('colorLine6').value,
+    line7: document.getElementById('colorLine7').value
+  };
+
+  config.line1 = document.getElementById('textLine1').value;
+  config.line2 = document.getElementById('textLine2').value;
+  config.line3 = document.getElementById('textLine3').value;
+  config.line5 = document.getElementById('textLine5').value;
+  config.line6 = document.getElementById('textLine6').value;
+  config.line7 = document.getElementById('textLine7').value;
+
+  config.spinSpeed = parseFloat(document.getElementById('spinSpeed').value);
+  autoSpinSpeed = config.spinSpeed;
+  config.studentName = document.getElementById('manualNameInput').value.trim();
+
+  rebuildAllTexts();
+  saveConfig();
+  showToast('✅ تم الحفظ');
+});
+
+document.getElementById('resetAll').addEventListener('click', function() {
+  if (!confirm('إعادة الضبط؟')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+});
+
+function saveConfig() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(config)); }
+  catch (e) { console.warn(e); }
+}
+
+loadConfigToPanel();
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    if (panel.classList.contains('open')) closePanel();
+    else openPanel();
+  }
+});
+
+console.log('%c✅ 3D عربي مجسم جاهز', 'color:#ffe08a;font-size:14px;font-weight:bold');
+
+})();
+</script>
+</body>
+</html>
